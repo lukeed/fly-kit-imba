@@ -1,0 +1,25 @@
+{
+  "version": "0.0.0",
+  "name": "Fly Kit: Imba",
+  "launch_path": "/index.html",
+  "description": "Jumpstart a Web App with Imba JS and Fly.",
+  "icons": {
+    "128": "/img/touch/icon-128x128.png"
+  },
+  "developer": {
+    "name": "",
+    "url": ""
+  },
+  "installs_allowed_from": [
+    "*"
+  ],
+  "default_locale": "en",
+  "permissions": {
+  },
+  "locales": {
+    "en": {
+      "name": "Fly Starter Kit",
+      "description": "Jumpstart a Web App with Imba JS and Fly."
+    }
+  }
+}
