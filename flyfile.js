@@ -5,6 +5,7 @@ let isWatch = false;
 let isServer = false;
 
 const src = 'app';
+const tmp = '.tmp';
 const dest = 'dist';
 const node = 'node_modules';
 
@@ -60,7 +61,7 @@ export async function build() {
 
 // Delete the output directories
 export async function clean() {
-	await this.clear(dest);
+	await this.clear([dest, tmp]);
 }
 
 // Copy all images, compress them, then send to dest
@@ -113,9 +114,19 @@ export async function lint() {
 
 // Compile scripts
 export async function scripts() {
+	// imba
 	await this
 		.source(`${paths.scripts}.imba`)
 		.imba()
+		.target(`${tmp}/js`);
+
+	// js
+	await this.source(`${paths.scripts}.js`)
+		.target(`${tmp}/js`);
+
+	// concat tmp/js & send to dist
+	await this.source(`${tmp}/js/*.js`)
+		.concat('main.js')
 		.target(`${dest}/js`);
 
 	return isProd ? await this.start('uglify') : reload();
