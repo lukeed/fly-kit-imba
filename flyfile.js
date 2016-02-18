@@ -6,14 +6,18 @@ let isServer = false;
 
 const src = 'app';
 const dest = 'dist';
+const node = 'node_modules';
 
 const paths = {
+	html: `${src}/*.html`,
 	styles: `${src}/styles`,
 	scripts: `${src}/scripts/**/*`,
 	images: `${src}/images/**/*.{png,gif,jpg,svg}`,
 	fonts: `${src}/fonts/**/*.{eot,woff,ttf,svg}`,
 	extras: `${src}/*.{txt,json,webapp,ico}`,
-	html: `${src}/*.html`
+	vendor: [
+		`${node}/imba/dist/imba.js`,
+	]
 };
 
 /**
@@ -35,7 +39,7 @@ export async function watch() {
 	await this.watch(paths.images, 'images');
 	await this.watch(paths.fonts, 'fonts');
 	await this.watch(paths.html, 'html');
-	await this.start(['extras', 'serve']);
+	await this.start(['vendor', 'extras', 'serve']);
 }
 
 /**
@@ -113,12 +117,15 @@ export async function scripts() {
 		.source(`${paths.scripts}.imba`)
 		.imba()
 		.target(`${dest}/js`);
-		// .browserify({
-		// 	transform: require('babelify').configure({presets: 'es2015'})
-		// })
-		// .concat('main.js')
 
 	return isProd ? await this.start('uglify') : reload();
+}
+
+// Copy Vendor scripts
+export async function vendor() {
+	await this.source(paths.vendor)
+		.concat('vendor.js')
+		.target(`${dest}/js/lib`, {depth: 0});
 }
 
 // Minify, Trim, and Obfuscate scripts
