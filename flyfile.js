@@ -108,7 +108,10 @@ export async function extras() {
 // Lint javascript
 export async function lint() {
 	await this.source(`${paths.scripts}.js`).xo({
-		globals: ['navigator', 'window']
+		globals: ['navigator', 'window'],
+		rules: {
+			'no-extra-semi': 1 // warn-only
+		}
 	});
 }
 
