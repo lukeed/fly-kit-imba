@@ -42,7 +42,7 @@ npm run serve
 * ES5, ES6, and ES7 support via Babel
 * Javascript Linting via [XO](https://github.com/sindresorhus/xo)
 * HTML Minification
-* **Offline** Caching (Service Worker)
+* **Offline Support** (Service Worker Caching)
 * SASS pre-processor
 * Uglify JS
 
