@@ -139,12 +139,10 @@ export async function uglify() {
 
 // Compile and automatically prefix stylesheets
 export async function styles() {
-	const s = paths.styles;
-
-	await this.source(`${s}/app.scss`)
+	await this.source(`${paths.styles}/app.scss`)
 		.sass({
 			outputStyle: 'compressed',
-			includePaths: [`${s}/**/*`]
+			includePaths: [paths.styles]
 		})
 		.autoprefixer({
 			browsers: [
