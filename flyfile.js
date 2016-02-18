@@ -12,7 +12,8 @@ const paths = {
 	scripts: `${src}/scripts/**/*`,
 	images: `${src}/images/**/*.{png,gif,jpg,svg}`,
 	fonts: `${src}/fonts/**/*.{eot,woff,ttf,svg}`,
-	html: `${src}/*.html`,
+	extras: `${src}/*.{txt,json,webapp,ico}`,
+	html: `${src}/*.html`
 };
 
 /**
@@ -34,8 +35,7 @@ export async function watch() {
 	await this.watch(paths.images, 'images');
 	await this.watch(paths.fonts, 'fonts');
 	await this.watch(paths.html, 'html');
-	// await this.start(['extras', 'serve']);
-	await this.start('serve');
+	await this.start(['extras', 'serve']);
 }
 
 /**
@@ -97,7 +97,7 @@ export async function htmlmin() {
 
 // Copy other root-level files
 export async function extras() {
-	// await this.source(paths.extras).target(paths.extras);
+	await this.source(paths.extras).target(dest);
 }
 
 // Lint javascript
