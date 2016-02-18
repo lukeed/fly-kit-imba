@@ -46,7 +46,11 @@
     "kit",
     "fly"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "imba": "^0.14.2",
+    "todomvc-app-css": "^2.0.0",
+    "todomvc-common": "^1.0.0"
+  },
   "devDependencies": {
     "browser-sync": "^2.10.0",
     "fly": "^0.8.5",
