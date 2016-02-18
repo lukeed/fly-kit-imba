@@ -172,7 +172,7 @@ export async function styles() {
 
 // Version these assets (Cache-busting)
 export async function rev() {
-	const src = ['js', 'css', 'img'].map(el => `${dest}/${el}/**/*`);
+	const src = ['js', 'css', 'img'].map(el => `${dest}/${el}/**/*.*`);
 	return this.source(src).rev({
 		replace: true,
 		base: dest
