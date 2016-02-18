@@ -49,9 +49,9 @@ export async function build() {
 	isProd = true;
 	isWatch = false;
 	await this.start('clean');
-	await this.start(['lint', 'images', 'fonts', 'styles', 'html', 'extras'], {parallel: true});
-	await this.start('scripts', 'rev');
-	await this.start('cache');
+	await this.start(['lint', 'fonts', 'html', 'extras'], {parallel: true});
+	await this.start(['images', 'styles', 'scripts', 'vendor']);
+	await this.start('rev');
 }
 
 // ###
