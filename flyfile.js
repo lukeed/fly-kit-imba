@@ -116,15 +116,16 @@ export async function lint() {
 }
 
 // Compile scripts
-export async function scripts() {
-	// imba
-	await this
-		.source(`${paths.scripts}.imba`)
+x.scripts = function * () {
+	// compile imba files separately
+	yield this
+		.source(src.scripts + '.imba')
 		.imba()
 		.target(tmp);
 
-	// js
-	await this.source(`${paths.scripts}.js`)
+	// compile pure js files separately
+	yield this.source(src.scripts + '.js')
+		.babel({presets: ['es2015']})
 		.target(tmp);
 
 	// concat `tmp/js` & send to dist
