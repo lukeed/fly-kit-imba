@@ -121,14 +121,14 @@ export async function scripts() {
 	await this
 		.source(`${paths.scripts}.imba`)
 		.imba()
-		.target(`${tmp}/js`);
+		.target(tmp);
 
 	// js
 	await this.source(`${paths.scripts}.js`)
-		.target(`${tmp}/js`);
+		.target(tmp);
 
-	// concat tmp/js & send to dist
-	await this.source(`${tmp}/js/*.js`)
+	// concat `tmp/js` & send to dist
+	yield this.source(tmp + '/*.js')
 		.concat('main.js')
 		.target(`${dest}/js`);
 
