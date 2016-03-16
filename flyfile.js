@@ -111,7 +111,7 @@ x.lint = function * () {
 	yield this.source(src.scripts + '.js').xo({
 		globals: ['navigator', 'window', 'document'],
 		rules: {
-			'no-extra-semi': 1 // warn-only
+			// custom rule overrides
 		}
 	});
 };
