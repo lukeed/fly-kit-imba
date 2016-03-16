@@ -3,10 +3,10 @@
 	// and that the current page is accessed from a secure origin.
 	// Using a service worker from an insecure origin will trigger JS console errors
 	// @docs: http://www.chromium.org/Home/chromium-security/prefer-secure-origins-for-powerful-new-features
-	var loc = window.location;
-	var nav = window.navigator;
+	const loc = window.location;
+	const nav = window.navigator;
 
-	var isLocalhost = Boolean(loc.hostname === 'localhost' ||
+	const isLocalhost = Boolean(loc.hostname === 'localhost' ||
 		// [::1] is the IPv6 localhost address.
 		loc.hostname === '[::1]' ||
 		// 127.0.0.1/8 is considered localhost for IPv4.
@@ -24,7 +24,7 @@
 		}
 
 		// updatefound is fired if 'service-worker.js' changes.
-		registration.onupdatefound = function () {
+		registration.onupdatefound = () => {
 			// updatefound is also fired the very first time the SW is installed,
 			// and there's no need to prompt for a reload at that point.
 			// So check here to see if the page is already controlled,
@@ -32,9 +32,9 @@
 			if (nav.serviceWorker.controller) {
 				// The updatefound event implies that registration.installing is set:
 				// @docs: https://slightlyoff.github.io/ServiceWorker/spec/service_worker/index.html#service-worker-container-updatefound-event
-				var installing = registration.installing;
+				const installing = registration.installing;
 
-				installing.onstatechange = function () {
+				installing.onstatechange = () => {
 					switch (installing.state) {
 						case 'installed':
 							// At this point, the old content will have been purged and the
@@ -57,7 +57,7 @@
 
 	// @init: If serviceWorkers are supported & should be initialized here
 	if ('serviceWorker' in nav && (loc.protocol === 'https:' || isLocalhost)) {
-		nav.serviceWorker.register('service-worker.js').then(onSuccess).catch(function (e) {
+		nav.serviceWorker.register('service-worker.js').then(onSuccess).catch((e) => {
 			console.error('Error during service worker registration:', e);
 		});
 	}
