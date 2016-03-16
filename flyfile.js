@@ -157,7 +157,7 @@ x.uglify = function * () {
 				drop_console: true
 			}
 		})
-		.target(dest = '/js');
+		.target(dest + '/js');
 };
 
 // Compile and automatically prefix stylesheets
