@@ -130,6 +130,7 @@ x.scripts = function * () {
 
 	// concat `tmp/js` & send to dist
 	yield this.source(tmp + '/*.js')
+		.browserify()
 		.concat('main.js')
 		.target(dest + '/js');
 
