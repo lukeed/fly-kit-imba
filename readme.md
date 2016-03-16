@@ -37,9 +37,11 @@ npm run serve
 
 ## Features
 * Asset Versioning
+* Babel (for non-Imba ES6/7 support)
+* Browserify Bundles
 * BrowserSync
+* Cache-Busting/versioned production assets
 * CSS Autoprefixer
-* ES5, ES6, and ES7 support via Babel
 * Javascript Linting via [XO](https://github.com/sindresorhus/xo)
 * HTML Minification
 * **Offline Support** (Service Worker Caching)
