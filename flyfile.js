@@ -51,8 +51,8 @@ x.build = function * () {
 	isProd = true;
 	isWatch = false;
 	yield this.start('clean');
-	yield this.start(['lint', 'fonts', 'html', 'extras'], {parallel: true});
-	yield this.start(['images', 'styles', 'scripts', 'vendor']);
+	yield this.start(['lint', 'fonts', 'html', 'extras', 'vendor']);
+	yield this.start(['images', 'styles', 'scripts']);
 	yield this.start('rev');
 };
 
