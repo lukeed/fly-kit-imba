@@ -1,91 +1,92 @@
-import browserSync from 'browser-sync';
+var x = module.exports;
+var browserSync = require('browser-sync');
 
-let isProd = false;
-let isWatch = false;
-let isServer = false;
+var isProd = false;
+var isWatch = false;
+var isServer = false;
 
-const src = 'app';
-const tmp = '.tmp';
-const dest = 'dist';
-const node = 'node_modules';
+var app = 'app';
+var tmp = '.tmp';
+var dest = 'dist';
+var node = 'node_modules';
 
-const paths = {
-	html: `${src}/*.html`,
-	styles: `${src}/styles`,
-	scripts: `${src}/scripts/**/*`,
-	images: `${src}/images/**/*.{png,gif,jpg,svg}`,
-	fonts: `${src}/fonts/**/*.{eot,woff,ttf,svg}`,
-	extras: `${src}/*.{txt,json,webapp,ico}`,
+var src = {
+	html: app + '/*.html',
+	styles: app + '/styles',
+	scripts: app + '/scripts/**/*',
+	images: app + '/images/**/*.{png,gif,jpg,svg}',
+	fonts: app + '/fonts/**/*.{eot,woff,ttf,svg}',
+	extras: app + '/*.{txt,json,webapp,ico}',
 	vendor: [
-		`${node}/imba/dist/imba.js`,
+		node + '/imba/dist/imba.js',
 	]
 };
 
 /**
  * Default Task: watch
  */
-export default async function () {
-	await this.start('watch');
-}
+x.default = function * () {
+	yield this.start('watch');
+};
 
 /**
  * Run a dev server & Recompile when files change
  */
-export async function watch() {
+x.watch = function * () {
 	isWatch = true;
 	isProd = false;
-	await this.start('clean');
-	await this.watch(`${paths.scripts}`, ['lint', 'scripts']);
-	await this.watch(`${paths.styles}/**/*.{sass,css,scss}`, 'styles');
-	await this.watch(paths.images, 'images');
-	await this.watch(paths.fonts, 'fonts');
-	await this.watch(paths.html, 'html');
-	await this.start(['vendor', 'extras', 'serve']);
-}
+	yield this.start('clean');
+	yield this.watch(src.scripts, ['lint', 'scripts']);
+	yield this.watch(src.styles + '/**/*.{sass,css,scss}', 'styles');
+	yield this.watch(src.images, 'images');
+	yield this.watch(src.fonts, 'fonts');
+	yield this.watch(src.html, 'html');
+	yield this.start(['vendor', 'extras', 'serve']);
+};
 
 /**
  * Build the production files
  */
-export async function build() {
+x.build = function * () {
 	isProd = true;
 	isWatch = false;
-	await this.start('clean');
-	await this.start(['lint', 'fonts', 'html', 'extras'], {parallel: true});
-	await this.start(['images', 'styles', 'scripts', 'vendor']);
-	await this.start('rev');
-}
+	yield this.start('clean');
+	yield this.start(['lint', 'fonts', 'html', 'extras'], {parallel: true});
+	yield this.start(['images', 'styles', 'scripts', 'vendor']);
+	yield this.start('rev');
+};
 
 // ###
 // # Tasks
 // ###
 
 // Delete the output directories
-export async function clean() {
-	await this.clear([dest, tmp]);
-}
+x.clean = function * () {
+	yield this.clear([dest, tmp]);
+};
 
 // Copy all images, compress them, then send to dest
-export async function images() {
-	await this.source(paths.images)
-		.target(`${dest}/img`, {depth: 1});
+x.images = function * () {
+	yield this.source(src.images)
+		.target(dest + '/img', {depth: 1});
 	return reload();
-}
+};
 
 // Copy all fonts, then send to dest
-export async function fonts() {
-	await this.source(paths.fonts)
-		.target(`${dest}/fonts`, {depth: 0});
+x.fonts = function * () {
+	yield this.source(src.fonts)
+		.target(dest + '/fonts', {depth: 0});
 	return reload();
-}
+};
 
 // Scan your HTML for assets & optimize them
-export async function html() {
-	await this.source(paths.html).target(dest);
-	return isProd ? await this.start('htmlmin') : reload();
-}
+x.html = function * () {
+	yield this.source(src.html).target(dest);
+	return isProd ? yield this.start('htmlmin') : reload();
+};
 
-export async function htmlmin() {
-	await this.source(`${dest}/*.html`)
+x.htmlmin = function * () {
+	yield this.source(dest + '/*.html')
 		.htmlmin({
 			removeComments: true,
 			collapseWhitespace: true,
@@ -98,22 +99,22 @@ export async function htmlmin() {
 			removeOptionalTags: true
 		})
 		.target(dest);
-}
+};
 
 // Copy other root-level files
-export async function extras() {
-	await this.source(paths.extras).target(dest);
-}
+x.extras = function * () {
+	yield this.source(src.extras).target(dest);
+};
 
 // Lint javascript
-export async function lint() {
-	await this.source(`${paths.scripts}.js`).xo({
+x.lint = function * () {
+	yield this.source(src.scripts + '.js').xo({
 		globals: ['navigator', 'window', 'document'],
 		rules: {
 			'no-extra-semi': 1 // warn-only
 		}
 	});
-}
+};
 
 // Compile scripts
 x.scripts = function * () {
@@ -131,21 +132,21 @@ x.scripts = function * () {
 	// concat `tmp/js` & send to dist
 	yield this.source(tmp + '/*.js')
 		.concat('main.js')
-		.target(`${dest}/js`);
+		.target(dest + '/js');
 
-	return isProd ? await this.start('uglify') : reload();
-}
+	return isProd ? yield this.start('uglify') : reload();
+};
 
 // Copy Vendor scripts
-export async function vendor() {
-	await this.source(paths.vendor)
+x.vendor = function * () {
+	yield this.source(src.vendor)
 		.concat('vendor.js')
-		.target(`${dest}/js/lib`, {depth: 0});
-}
+		.target(dest + '/js/lib', {depth: 0});
+};
 
 // Minify, Trim, and Obfuscate scripts
-export async function uglify() {
-	await this.source(`${dest}/js/*.js`)
+x.uglify = function * () {
+	yield this.source(dest + '/js/*.js')
 		.uglify({
 			compress: {
 				conditionals: true,
@@ -156,15 +157,15 @@ export async function uglify() {
 				drop_console: true
 			}
 		})
-		.target(`${dest}/js`);
-}
+		.target(dest = '/js');
+};
 
 // Compile and automatically prefix stylesheets
-export async function styles() {
-	await this.source(`${paths.styles}/app.scss`)
+x.styles = function * () {
+	yield this.source(src.styles + '/app.scss')
 		.sass({
 			outputStyle: 'compressed',
-			includePaths: [paths.styles]
+			includePaths: [src.styles]
 		})
 		.autoprefixer({
 			browsers: [
@@ -180,33 +181,36 @@ export async function styles() {
 			]
 		})
 		.concat('main.css')
-		.target(`${dest}/css`);
+		.target(dest + '/css');
 
 	return reload();
-}
+};
 
 // Version these assets (Cache-busting)
-export async function rev() {
-	const src = ['js', 'css'].map(el => `${dest}/${el}/**/*.*`);
-	return this.source(src).rev({
+x.rev = function * () {
+	var paths = ['js', 'css'].map(function (el) {
+		return dest + '/' + el + '/**/*.*';
+	});
+
+	return this.source(paths).rev({
 		replace: true,
 		base: dest
 	});
-}
+};
 
 // Cache assets so they are available offline!
-export async function cache() {
-	await this
-		.source(`${dest}/**/*.{js,html,css,png,jpg,gif}`)
+x.cache = function * () {
+	yield this
+		.source(dest + '/**/*.{js,html,css,png,jpg,gif}')
 		.precache({
 			root: dest,
 			cacheId: 'fly-kit-imba',
 			stripPrefix: dest
 		});
-}
+};
 
 // Launch loacl serve at develop directory
-export async function serve() {
+x.serve = function * () {
 	isServer = true;
 	browserSync({
 		notify: false,
@@ -215,7 +219,7 @@ export async function serve() {
 			baseDir: dest
 		}
 	});
-}
+};
 
 // helper, reload browsersync
 function reload() {
