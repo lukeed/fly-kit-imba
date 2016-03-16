@@ -22,17 +22,13 @@ var src = {
 	]
 };
 
-/**
- * Default Task: watch
- */
 x.default = function * () {
+	/** @desc Default Task: `watch` */
 	yield this.start('watch');
 };
 
-/**
- * Run a dev server & Recompile when files change
- */
 x.watch = function * () {
+	/** @desc Main Task: Starts a server & Recompiles files on change */
 	isWatch = true;
 	isProd = false;
 	yield this.start('clean');
@@ -44,10 +40,8 @@ x.watch = function * () {
 	yield this.start(['vendor', 'extras', 'serve']);
 };
 
-/**
- * Build the production files
- */
 x.build = function * () {
+	/** @desc Main Task: Build the production files */
 	isProd = true;
 	isWatch = false;
 	yield this.start('clean');
@@ -61,32 +55,33 @@ x.build = function * () {
 // # Tasks
 // ###
 
-// Delete the output directories
 x.clean = function * () {
+	/** @desc Delete all files in the `dist` & `.tmp` directories */
 	yield this.clear([dest, tmp]);
 };
 
-// Copy all images, compress them, then send to dest
 x.images = function * () {
+	/** @desc Compress and copy all images to `dist` */
 	yield this.source(src.images)
 		.target(dest + '/img', {depth: 1});
 	return reload();
 };
 
-// Copy all fonts, then send to dest
 x.fonts = function * () {
+	/** @desc Copy all fonts to `dist` */
 	yield this.source(src.fonts)
 		.target(dest + '/fonts', {depth: 0});
 	return reload();
 };
 
-// Scan your HTML for assets & optimize them
 x.html = function * () {
+	/** @desc Copy all HTML files to `dist`. Will run `htmlmin` during `build` task. */
 	yield this.source(src.html).target(dest);
 	return isProd ? yield this.start('htmlmin') : reload();
 };
 
 x.htmlmin = function * () {
+	/** @desc Minify all HTML files already within `dist`. Production only */
 	yield this.source(dest + '/*.html')
 		.htmlmin({
 			removeComments: true,
@@ -104,11 +99,13 @@ x.htmlmin = function * () {
 
 // Copy other root-level files
 x.extras = function * () {
+	/** @desc Copy other root-level files to `dist` */
 	yield this.source(src.extras).target(dest);
 };
 
-// Lint javascript
 x.lint = function * () {
+	/** @desc Lint javascript files */
+
 	yield this.source(src.scripts + '.js').xo({
 		globals: ['navigator', 'window', 'document'],
 		rules: {
@@ -117,8 +114,9 @@ x.lint = function * () {
 	});
 };
 
-// Compile scripts
 x.scripts = function * () {
+	/** @desc Compile javascript files with Browserify. Will run `uglify` during `build` task.  */
+
 	// compile imba files separately
 	yield this
 		.source(src.scripts + '.imba')
@@ -138,15 +136,15 @@ x.scripts = function * () {
 	return isProd ? yield this.start('uglify') : reload();
 };
 
-// Copy Vendor scripts
 x.vendor = function * () {
+	/** @desc Copy and concatenate vendor files to `dist` */
 	yield this.source(src.vendor)
 		.concat('vendor.js')
 		.target(dest + '/js/lib', {depth: 0});
 };
 
-// Minify, Trim, and Obfuscate scripts
 x.uglify = function * () {
+	/** @desc Minify, compress, and obfuscate all javascript files already within `dist` */
 	yield this.source(dest + '/js/*.js')
 		.uglify({
 			compress: {
@@ -161,8 +159,8 @@ x.uglify = function * () {
 		.target(dest + '/js');
 };
 
-// Compile and automatically prefix stylesheets
 x.styles = function * () {
+	/** @desc Compile and prefix stylesheets with vendor properties */
 	yield this.source(src.styles + '/app.scss')
 		.sass({
 			outputStyle: 'compressed',
@@ -187,8 +185,8 @@ x.styles = function * () {
 	return reload();
 };
 
-// Version these assets (Cache-busting)
 x.rev = function * () {
+	/** @desc Version/Hashify production assets. (Cache-Busting) */
 	var paths = ['js', 'css'].map(function (el) {
 		return dest + '/' + el + '/**/*.*';
 	});
@@ -199,8 +197,8 @@ x.rev = function * () {
 	});
 };
 
-// Cache assets so they are available offline!
 x.cache = function * () {
+	/** @desc Cache assets so they are available offline! */
 	yield this
 		.source(dest + '/**/*.{js,html,css,png,jpg,gif}')
 		.precache({
@@ -210,9 +208,10 @@ x.cache = function * () {
 		});
 };
 
-// Launch loacl serve at develop directory
 x.serve = function * () {
+	/** @desc Launch a local server from the `dist` directory. */
 	isServer = true;
+
 	browserSync({
 		notify: false,
 		logPrefix: 'Fly',
