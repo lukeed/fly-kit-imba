@@ -53,7 +53,7 @@
   },
   "devDependencies": {
     "browser-sync": "^2.10.0",
-    "fly": "^0.8.5",
+    "fly": "^1.0.0",
     "fly-autoprefixer": "^0.2.0",
     "fly-babel": "^0.7.0",
     "fly-browserify": "^1.0.0",
