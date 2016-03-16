@@ -54,6 +54,7 @@ x.build = function * () {
 	yield this.start(['lint', 'fonts', 'html', 'extras', 'vendor']);
 	yield this.start(['images', 'styles', 'scripts']);
 	yield this.start('rev');
+	yield this.start('cache');
 };
 
 // ###
