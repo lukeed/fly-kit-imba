@@ -188,14 +188,11 @@ x.styles = function * () {
 
 x.rev = function * () {
 	/** @desc Version/Hashify production assets. (Cache-Busting) */
-	var paths = ['js', 'css'].map(function (el) {
-		return dest + '/' + el + '/**/*.*';
-	});
-
-	return this.source(paths).rev({
-		replace: true,
-		base: dest
-	});
+	yield this.source(dest + '/{js,css}/**/*')
+		.rev({strip: dest})
+		.revManifest({dirname: dest})
+		.revReplace({dirname: dest})
+		.target(dest);
 };
 
 x.cache = function * () {
